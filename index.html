@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секретное поздравление от Маши!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Фоновая музыка -->
+    <audio id="background-music" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио элемент.
+    </audio>
+
+    <div class="container">
+        <!-- Конфетти-контейнер -->
+        <div id="confetti-container"></div>
+        
+        <!-- Звёздное небо -->
+        <div id="stars-container"></div>
+
+        <!-- Главный контент -->
+        <div class="main-content">
+            <!-- Приветственный экран -->
+            <div class="welcome-screen" id="welcome-screen">
+                <div class="sisters-title">
+                    <h1>💝 От Маши для Полины 💝</h1>
+                    <p class="sisters-subtitle">Особое поздравление для моей старшей сестры!</p>
+                </div>
+                
+                <div class="entrance-animation">
+                    <div class="heart-pulse">💖</div>
+                    <p class="enter-hint">Нажми anywhere чтобы начать</p>
+                </div>
+            </div>
+
+            <!-- Основной контент (изначально скрыт) -->
+            <div class="content-wrapper" id="content-wrapper">
+                <div class="sister-message">
+                    <h2>Моя дорогая Полинка! 💕</h2>
+                    <p>У меня для тебя подготовлен особый сюрприз!</p>
+                </div>
+
+                <!-- Игры и задания перед конвертом -->
+                <div class="pre-envelope-games">
+                    <!-- Игра 1: Кликер-поздравление -->
+                    <div class="game-step active" id="game1">
+                        <h3>🎮 Игра 1: Собери поздравление</h3>
+                        <p>Кликай на слова в правильном порядке:</p>
+                        <div class="click-puzzle">
+                            <div class="puzzle-words">
+                                <button class="puzzle-word" data-order="1" onclick="selectWord(1)">Полина</button>
+                                <button class="puzzle-word" data-order="2" onclick="selectWord(2)">ты</button>
+                                <button class="puzzle-word" data-order="3" onclick="selectWord(3)">самая</button>
+                                <button class="puzzle-word" data-order="4" onclick="selectWord(4)">лучшая</button>
+                            </div>
+                            <div class="selected-words">
+                                <h4>Твое поздравление:</h4>
+                                <div id="word-sequence" class="word-sequence"></div>
+                            </div>
+                        </div>
+                        <button class="game-btn" onclick="checkWordPuzzle()">Проверить</button>
+                        <button class="game-btn reset-btn" onclick="resetWordPuzzle()">Сбросить</button>
+                    </div>
+
+                    <!-- Игра 2: Найди все сердца -->
+                    <div class="game-step" id="game2">
+                        <h3>🎮 Игра 2: Найди спрятанные сердца</h3>
+                        <p>Кликни на все сердечки на экране (5 штук):</p>
+                        <div class="heart-hunt">
+                            <div class="hidden-heart" style="top: 20%; left: 15%;">💖</div>
+                            <div class="hidden-heart" style="top: 60%; left: 80%;">💖</div>
+                            <div class="hidden-heart" style="top: 30%; left: 70%;">💖</div>
+                            <div class="hidden-heart" style="top: 80%; left: 25%;">💖</div>
+                            <div class="hidden-heart" style="top: 45%; left: 50%;">💖</div>
+                        </div>
+                        <div class="heart-counter">Найдено: <span id="hearts-found">0</span>/5</div>
+                    </div>
+
+                    <!-- Игра 3: Викторина про сестёр -->
+                    <div class="game-step" id="game3">
+                        <h3>🎮 Игра 3: Сестринская викторина</h3>
+                        <div class="quiz">
+                            <div class="quiz-question">
+                                <p>Кто всегда был твоей самой большой поддержкой?</p>
+                                <button class="quiz-option" data-correct="true">Моя сестра Маша</button>
+                                <button class="quiz-option" data-correct="false">Кто-то другой</button>
+                            </div>
+                            <div class="quiz-question">
+                                <p>Что самое ценное у сестёр?</p>
+                                <button class="quiz-option" data-correct="false">Общие игрушки</button>
+                                <button class="quiz-option" data-correct="true">Общая поддержка и любовь</button>
+                            </div>
+                        </div>
+                        <button class="game-btn" onclick="checkAllQuiz()">Проверить ответы</button>
+                        <button class="game-btn reset-btn" onclick="resetQuiz()">Начать заново</button>
+                    </div>
+
+                    <!-- Игра 4: Память -->
+                    <div class="game-step" id="game4">
+                        <h3>🎮 Игра 4: Проверка памяти</h3>
+                        <p>Запомни последовательность цветов за 5 секунд и повтори:</p>
+                        <div class="memory-game">
+                            <div class="sequence-display" id="sequence-display">
+                                <h4>Запомни эту последовательность:</h4>
+                                <div class="color-sequence">
+                                    <div class="color-box pink"></div>
+                                    <div class="color-box purple"></div>
+                                    <div class="color-box gold"></div>
+                                    <div class="color-box pink"></div>
+                                </div>
+                                <p class="sequence-hint">(розовый, фиолетовый, золотой, розовый)</p>
+                                <div class="timer" id="timer">5</div>
+                            </div>
+                            <div class="user-input" id="user-input" style="display: none;">
+                                <h4>Теперь повтори последовательность:</h4>
+                                <div class="color-options">
+                                    <div class="color-option pink" onclick="selectColor('pink')" title="Розовый"></div>
+                                    <div class="color-option purple" onclick="selectColor('purple')" title="Фиолетовый"></div>
+                                    <div class="color-option gold" onclick="selectColor('gold')" title="Золотой"></div>
+                                </div>
+                                <div class="user-sequence" id="user-sequence"></div>
+                                <button class="game-btn" onclick="checkMemory()">Проверить</button>
+                                <button class="game-btn reset-btn" onclick="resetMemory()">Сбросить</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Кнопка продолжения -->
+                    <div class="game-step" id="game5">
+                        <h3>🎉 Отлично! Ты прошла все испытания!</h3>
+                        <p>Теперь ты готова получить особое послание!</p>
+                        <button class="final-game-btn" onclick="showEnvelopeSection()">Перейти к посланию →</button>
+                    </div>
+                </div>
+
+                <!-- Конверт с посланием -->
+                <div class="envelope-section" id="envelope-section">
+                    <div class="envelope-container">
+                        <div class="envelope" id="envelope">
+                            <div class="envelope-front" id="envelope-front">
+                                <div class="stamp">👭</div>
+                                <div class="to">Для моей Полиночки!</div>
+                                <div class="click-hint">↓ Нажми на конверт ↓</div>
+                            </div>
+                            <div class="letter" id="letter">
+                                <div class="letter-content">
+                                    <h2>Личное послание от Маши 💌</h2>
+                                    <div class="message-text">
+                                        <p>Полин, я всегда верила в тебя, даже когда ты сомневалась в себе!</p>
+                                        <p>Ты прошла такой большой путь и заслужила все самые лучшие награды...</p>
+                                    </div>
+                                    
+                                    <!-- Видео -->
+                                    <div class="video-container">
+                                        <video controls class="personal-video" id="personal-video">
+                                            <source src="polina.mp4" type="video/mp4">
+                                            Ваш браузер не поддерживает видео.
+                                        </video>
+                                        <div class="video-caption">Наш особенный момент вместе! 🎥</div>
+                                    </div>
+
+                                    <div class="message-text">
+                                        <p>И теперь пришло время получить твою заслуженную награду!</p>
+                                    </div>
+                                    
+                                    <!-- Головоломка -->
+                                    <div class="puzzle" id="puzzle">
+                                        <h3>🔐 Угадай наш секретный код сестры:</h3>
+                                        <div class="code-input">
+                                            <input type="text" id="code1" maxlength="1" placeholder="_">
+                                            <input type="text" id="code2" maxlength="1" placeholder="_">
+                                            <input type="text" id="code3" maxlength="1" placeholder="_">
+                                            <input type="text" id="code4" maxlength="1" placeholder="_">
+                                        </div>
+                                        <button id="verify-code" class="puzzle-btn">Проверить код</button>
+                                        <button id="hint-btn" class="hint-btn">Просить подсказку у сестры</button>
+                                        <div id="hint-text" class="hint-text"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Финальная зона -->
+                <div id="secret-zone" class="secret-zone">
+                    <div class="final-celebration">
+                        <div class="sisters-hug">
+                            <div class="hug-icon">👭</div>
+                            <h2>🎉 ПОЛИНОЧКА, ПОЗДРАВЛЯЮ! 🎉</h2>
+                        </div>
+                        
+                        <!-- Дополнительные поздравления -->
+                        <div class="congratulations-flow">
+                            <div class="congrat-message active">
+                                <p>Моя дорогая старшая сестра! Ты не представляешь, как я горжусь тобой!</p>
+                                <button class="next-congrat" onclick="showNextCongrat(1)">Читать дальше →</button>
+                            </div>
+                            
+                            <div class="congrat-message">
+                                <p>Помнишь, как ты учила меня завязывать шнурки? А теперь ты достигла таких высот!</p>
+                                <button class="next-congrat" onclick="showNextCongrat(2)">Еще... →</button>
+                            </div>
+                            
+                            <div class="congrat-message">
+                                <p>Ты всегда была для меня не просто сестрой, а настоящим примером для подражания.</p>
+                                <button class="next-congrat" onclick="showNextCongrat(3)">Продолжаем... →</button>
+                            </div>
+                            
+                            <div class="congrat-message">
+                                <p>Я смотрю на тебя и понимаю - вот он, настоящий успех, заслуженный трудом и сердцем!</p>
+                                <button class="next-congrat" onclick="showNextCongrat(4)">И наконец... →</button>
+                            </div>
+                            
+                            <div class="congrat-message">
+                                <p>Полин, знай - я всегда буду твоей самой преданной поддержкой и самой большой фанаткой!</p>
+                                <button class="next-congrat" onclick="showFinalReward()">Получить награду →</button>
+                            </div>
+                        </div>
+
+                        <!-- Финальная награда -->
+                        <div class="final-reward" id="final-reward">
+                            <div class="trophy">🏆</div>
+                            <p>Ты заслужила эту награду всем своим трудом и упорством!</p>
+                            <a href="sert.jpg" class="final-certificate-btn" target="_blank">
+                                📜 Получить твой заслуженный сертификат 📜
+                            </a>
+                        </div>
+
+                        <div class="sister-promise">
+                            <p>Обещаю всегда быть рядом и поддерживать тебя во всех твоих начинаниях! 💝</p>
+                            <div class="sister-signature">Твоя любящая сестра Маша</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Интерактивные элементы -->
+        <div class="floating-hearts"></div>
+        <div class="sister-symbols">👭💕🌟🎀💖👯‍♀️ Полина + Маша = 💝</div>
+    </div>
+
+    <audio id="celebration-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Переменные для игр
+        let foundHearts = 0;
+        let quizAnswers = {};
+        let userColorSequence = [];
+        let selectedWords = [];
+        let memoryTimer;
+
+        // Начало приложения
+        document.getElementById('welcome-screen').addEventListener('click', function() {
+            this.style.display = 'none';
+            document.getElementById('content-wrapper').style.display = 'block';
+            document.getElementById('background-music').play().catch(() => {});
+        });
+
+        // Игра 1: Кликер-поздравление
+        function selectWord(order) {
+            if (!selectedWords.includes(order)) {
+                selectedWords.push(order);
+                updateWordDisplay();
+            }
+        }
+
+        function updateWordDisplay() {
+            const wordSequence = document.getElementById('word-sequence');
+            wordSequence.innerHTML = '';
+            
+            selectedWords.forEach(order => {
+                const word = document.querySelector(`.puzzle-word[data-order="${order}"]`).textContent;
+                const wordElement = document.createElement('span');
+                wordElement.className = 'selected-word';
+                wordElement.textContent = word + ' ';
+                wordSequence.appendChild(wordElement);
+            });
+        }
+
+        function checkWordPuzzle() {
+            const correctSequence = [1, 2, 3, 4];
+            const isCorrect = JSON.stringify(selectedWords) === JSON.stringify(correctSequence);
+            
+            if (isCorrect) {
+                document.getElementById('game1').classList.remove('active');
+                document.getElementById('game2').classList.add('active');
+            } else {
+                alert('Попробуй ещё раз! Правильный порядок: Полина ты самая лучшая');
+            }
+        }
+
+        function resetWordPuzzle() {
+            selectedWords = [];
+            document.getElementById('word-sequence').innerHTML = '';
+        }
+
+        // Игра 2: Сердца
+        document.querySelectorAll('.hidden-heart').forEach(heart => {
+            heart.addEventListener('click', function() {
+                if (this.style.opacity !== '0.3') {
+                    this.style.opacity = '0.3';
+                    foundHearts++;
+                    document.getElementById('hearts-found').textContent = foundHearts;
+                    
+                    if (foundHearts === 5) {
+                        setTimeout(() => {
+                            document.getElementById('game2').classList.remove('active');
+                            document.getElementById('game3').classList.add('active');
+                            initializeQuiz();
+                        }, 1000);
+                    }
+                }
+            });
+        });
+
+        // Игра 3: Викторина
+        function initializeQuiz() {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.style.background = '';
+                option.style.pointerEvents = 'auto';
+                option.classList.remove('correct', 'wrong');
+                
+                option.addEventListener('click', function() {
+                    const question = this.closest('.quiz-question');
+                    const allOptions = question.querySelectorAll('.quiz-option');
+                    
+                    // Сбрасываем стили других кнопок в этом вопросе
+                    allOptions.forEach(opt => {
+                        opt.style.background = '';
+                        opt.classList.remove('correct', 'wrong');
+                    });
+                    
+                    // Подсвечиваем выбранную кнопку
+                    if (this.dataset.correct === 'true') {
+                        this.style.background = '#a8e6cf';
+                        this.classList.add('correct');
+                    } else {
+                        this.style.background = '#ff6b6b';
+                        this.classList.add('wrong');
+                    }
+                    
+                    // Сохраняем ответ
+                    const questionNum = Array.from(document.querySelectorAll('.quiz-question')).indexOf(question) + 1;
+                    quizAnswers[questionNum] = this.dataset.correct === 'true';
+                });
+            });
+        }
+
+        function checkAllQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let allAnswered = true;
+            let allCorrect = true;
+            
+            questions.forEach((question, index) => {
+                const questionNum = index + 1;
+                if (quizAnswers[questionNum] === undefined) {
+                    allAnswered = false;
+                    return;
+                }
+                if (!quizAnswers[questionNum]) {
+                    allCorrect = false;
+                }
+            });
+            
+            if (!allAnswered) {
+                alert('Ответь на все вопросы!');
+                return;
+            }
+            
+            if (allCorrect) {
+                document.getElementById('game3').classList.remove('active');
+                document.getElementById('game4').classList.add('active');
+                startMemoryGame();
+            } else {
+                alert('Есть неправильные ответы! Попробуй ещё раз.');
+            }
+        }
+
+        function resetQuiz() {
+            quizAnswers = {};
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.style.background = '';
+                option.style.pointerEvents = 'auto';
+                option.classList.remove('correct', 'wrong');
+            });
+        }
+
+        // Игра 4: Память (ИСПРАВЛЕННАЯ)
+        function startMemoryGame() {
+            userColorSequence = [];
+            document.getElementById('user-sequence').innerHTML = '';
+            document.getElementById('sequence-display').style.display = 'block';
+            document.getElementById('user-input').style.display = 'none';
+            
+            let timeLeft = 5;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = timeLeft;
+            
+            memoryTimer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(memoryTimer);
+                    document.getElementById('sequence-display').style.display = 'none';
+                    document.getElementById('user-input').style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        function selectColor(color) {
+            userColorSequence.push(color);
+            const userSeq = document.getElementById('user-sequence');
+            const colorBox = document.createElement('div');
+            colorBox.className = `color-box ${color}`;
+            userSeq.appendChild(colorBox);
+        }
+
+        function checkMemory() {
+            const correctSequence = ['pink', 'purple', 'gold', 'pink'];
+            const isCorrect = JSON.stringify(userColorSequence) === JSON.stringify(correctSequence);
+            
+            if (isCorrect) {
+                document.getElementById('game4').classList.remove('active');
+                document.getElementById('game5').classList.add('active');
+            } else {
+                alert('Не совсем так! Попробуй ещё раз: розовый, фиолетовый, золотой, розовый');
+                resetMemory();
+            }
+        }
+
+        function resetMemory() {
+            userColorSequence = [];
+            document.getElementById('user-sequence').innerHTML = '';
+            startMemoryGame();
+        }
+
+        function showEnvelopeSection() {
+            document.querySelector('.pre-envelope-games').style.display = 'none';
+            document.getElementById('envelope-section').style.display = 'block';
+        }
+
+        // Открытие конверта (ИСПРАВЛЕНО)
+        document.getElementById('envelope').addEventListener('click', function() {
+            if (!this.classList.contains('opened')) {
+                this.classList.add('opened');
+                // Скрываем переднюю часть конверта после открытия
+                document.getElementById('envelope-front').style.display = 'none';
+                createStars();
+                document.getElementById('celebration-sound').play();
+                
+                setTimeout(() => {
+                    document.getElementById('puzzle').style.opacity = '1';
+                    document.getElementById('puzzle').style.transform = 'translateY(0)';
+                }, 1000);
+            }
+        });
+
+        // Управление музыкой при видео
+        document.getElementById('personal-video').addEventListener('play', function() {
+            document.getElementById('background-music').pause();
+        });
+
+        document.getElementById('personal-video').addEventListener('pause', function() {
+            document.getElementById('background-music').play();
+        });
+
+        // Подсказки
+        let hintLevel = 0;
+        document.getElementById('hint-btn').addEventListener('click', function() {
+            const hintText = document.getElementById('hint-text');
+            hintLevel++;
+            
+            if (hintLevel === 1) {
+                hintText.innerHTML = '💡 Сестринская подсказка: Как-то связано с твоим пин-кодом, но не напрямую';
+            } else if (hintLevel === 2) {
+                hintText.innerHTML = '💡 Еще это связано с сегодняшним днем... Подумай о дате!';
+            } else {
+                hintText.innerHTML = '💡 Сегодня 31 октября... 31-10... 3110!';
+            }
+            
+            hintText.style.display = 'block';
+        });
+
+        // Проверка кода (3110)
+        document.getElementById('verify-code').addEventListener('click', function() {
+            const code1 = document.getElementById('code1').value;
+            const code2 = document.getElementById('code2').value;
+            const code3 = document.getElementById('code3').value;
+            const code4 = document.getElementById('code4').value;
+            
+            const enteredCode = code1 + code2 + code3 + code4;
+            
+            if (enteredCode === '3110') {
+                // Скрываем конверт и показываем поздравление
+                document.getElementById('envelope-section').style.display = 'none';
+                document.getElementById('secret-zone').style.display = 'block';
+                document.getElementById('puzzle').innerHTML = '<div class="success">✅ Ура! Код верный! Ты настоящая умничка! 💕</div>';
+                createConfetti();
+                document.getElementById('celebration-sound').play();
+                
+            } else {
+                document.getElementById('puzzle').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('puzzle').classList.remove('shake');
+                }, 500);
+                
+                document.querySelectorAll('.code-input input').forEach(input => {
+                    input.style.borderColor = '#ff6b6b';
+                    input.style.background = '#ffeaea';
+                });
+            }
+        });
+
+        // Поздравления по очереди
+        function showNextCongrat(step) {
+            document.querySelectorAll('.congrat-message').forEach(msg => {
+                msg.classList.remove('active');
+            });
+            document.querySelectorAll('.congrat-message')[step].classList.add('active');
+        }
+
+        function showFinalReward() {
+            document.querySelector('.congratulations-flow').style.display = 'none';
+            document.getElementById('final-reward').style.display = 'block';
+        }
+
+        // Управление полями ввода
+        document.querySelectorAll('.code-input input').forEach((input, index, inputs) => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                this.style.borderColor = '#4ecdc4';
+                this.style.background = 'white';
+                
+                if (this.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Анимации
+        function createStars() {
+            const starsContainer = document.getElementById('stars-container');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti-container');
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        // Создание плавающих сердец
+        function createHearts() {
+            const heartsContainer = document.querySelector('.floating-hearts');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        createHearts();
+    </script>
+</body>
+</html>
